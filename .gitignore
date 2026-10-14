@@ -1,0 +1,15 @@
+# Dependencias de Node.js
+node_modules/
+**/node_modules/
+
+# Archivos generados
+build/
+dist/
+
+# Variables de entorno
+.env
+.env.*
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
