@@ -1,0 +1,9 @@
+PRACTICA SERVICIOS Y COMPONENTS 
+Vamos a crear un nuevo proyecto para jugar con esto nuevo. 
+Llamamos al proyecto reactempleadosservices 
+Debemos tener Routing, Bootstrap y un menú de bootstrap. 
+En el menú, cargaremos los diferentes oficios de los empleados. 
+En el Home, cargaremos todos los empleados. 
+Al seleccionar un Oficio dentro del menú, mostraremos los empleados con dicho oficio en otro component.
+Utilizaremos Services para todo y Global 
+https://apiempleadosfullstack.azurewebsites.net/
