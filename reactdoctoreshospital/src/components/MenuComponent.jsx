@@ -76,6 +76,20 @@ export default class MenuComponent extends Component {
                                 </NavLink>
                             </li>
 
+                            {/* Enlace para ver todos los hospitales */}
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/hospitales">
+                                    Lista de hospitales
+                                </NavLink>
+                            </li>
+
+                            {/* Enlace para crear un hospital */}
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/createhospital">
+                                    Crear hospital
+                                </NavLink>
+                            </li>
+
                             {/* Desplegable de hospitales */}
                             <li className="nav-item dropdown">
                                 <a
@@ -86,8 +100,13 @@ export default class MenuComponent extends Component {
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
                                 >
-                                    Hospitales
+                                    Doctores por hospital
                                 </a>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/ejemplos">
+                                    Service Component
+                                </NavLink>
+                            </li>
 
                                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                                     {this.state.hospitales.map((hospital) => (

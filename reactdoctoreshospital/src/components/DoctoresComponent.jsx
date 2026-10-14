@@ -2,34 +2,26 @@ import React, { Component } from 'react'
 import Global from './Global'
 import axios from 'axios'
 import DetallesDoctor from './DetallesDoctor'
+import ServiceHospitales from '../services/ServiceHospitales'
 
 export default class DoctoresComponent extends Component {
-
+    service = new ServiceHospitales
     // URL de la API de doctores
     url = Global.urlApiDoctores
 
     // Estado del componente
     state = {
         doctores: [],
-        iddoctorSeleccionado: null
+        iddoctorSeleccionado: -1
     }
 
     // Carga los doctores del hospital seleccionado
     loadDoctoresHospital = () => {
-        let request = "api/doctores/doctoreshospital/" + this.props.idhospital
-
-        axios.get(this.url + request)
-            .then((response) => {
-                console.log(response.data)
-
-                // Guardamos los doctores recibidos en el estado
-                this.setState({
-                    doctores: response.data
-                })
+        this.service.getDoctoresHospital(this.props.idhospital).then(result => {
+            this.setState({
+                doctores: result
             })
-            .catch((error) => {
-                console.log("Error al cargar los doctores:", error)
-            })
+        })
     }
 
     // Se ejecuta cuando se carga el componente
@@ -76,9 +68,11 @@ export default class DoctoresComponent extends Component {
                                             <button
                                                 className="btn btn-primary"
                                                 onClick={() => {
+                                                    console.log("ID del doctor seleccionado:", doc.idDoctor);
+
                                                     this.setState({
                                                         iddoctorSeleccionado: doc.idDoctor
-                                                    })
+                                                    });
                                                 }}
                                             >
                                                 Ver detalles
@@ -91,7 +85,7 @@ export default class DoctoresComponent extends Component {
                     </tbody>
                 </table>
                 {
-                    this.state.iddoctorSeleccionado != null && (
+                    this.state.iddoctorSeleccionado !== -1 && (
                         <DetallesDoctor
                             iddoctor={this.state.iddoctorSeleccionado}
                         />
