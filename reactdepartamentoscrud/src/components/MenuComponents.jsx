@@ -24,7 +24,7 @@ export default class MenuComponents extends Component {
                             height="45"
                             className="rounded-circle me-2"
                         />
-                        Navbar
+                        Departamentos
                     </a>
 
                     <button
