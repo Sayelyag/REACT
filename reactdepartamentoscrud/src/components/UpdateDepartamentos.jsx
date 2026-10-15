@@ -76,7 +76,15 @@ export default class UpdateDepartamentos extends Component {
                     <button
                         onClick={this.updateDepartamento}
                         className="btn btn-info mt-3"
-                    >
+                        style={{
+                                width: "100%",
+                                backgroundColor: "#e88eaa",
+                                color: "#ffffff",
+                                fontWeight: "bold",
+                                padding: "12px",
+                                borderRadius: "10px",
+                                border: "none"
+                            }}>
                         Actualizar
                     </button>
                 </form>

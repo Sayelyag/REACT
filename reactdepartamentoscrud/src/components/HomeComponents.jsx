@@ -10,6 +10,12 @@ export default class HomeComponents extends Component {
         status: false
     }
 
+    deleteDepartamento = (idDepartamento) => {
+        this.service.deleteDepartamentos(idDepartamento).then((result) => {
+            this.loadDepartamentos();
+        })
+    }
+
     loadDepartamentos = () => {
         this.service.getDepartamentos().then((result) =>{
             this.setState({
@@ -41,6 +47,7 @@ export default class HomeComponents extends Component {
                                 <th style={{backgroundColor: "#f4a6b8",color: "#702d43"}}>Nombre</th>
                                 <th style={{backgroundColor: "#f4a6b8",color: "#702d43"}}>Localidad</th>
                                 <th style={{backgroundColor: "#f4a6b8",color: "#702d43"}}>Editar</th>
+                                <th style={{backgroundColor: "#f4a6b8",color: "#702d43"}}>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,17 +58,34 @@ export default class HomeComponents extends Component {
                                         <td style={{backgroundColor: "#f4a6b8",color: "#702d43"}}>{dept.localidad}</td>
                                         <td style={{backgroundColor: "#f4a6b8",color: "#702d43"}}>
                                             <NavLink className="btn btn-info" to={"/update/" + dept.numero + "/" + dept.nombre + "/" + dept.localidad} 
-                                            style={{
-                                                width: "100%",
-                                                backgroundColor: "#e88eaa",
-                                                color: "#ffffff",
-                                                fontWeight: "bold",
-                                                padding: "12px",
-                                                borderRadius: "10px",
-                                                border: "none"
-                                            }}>
+                                                style={{
+                                                    width: "100%",
+                                                    backgroundColor: "#e88eaa",
+                                                    color: "#ffffff",
+                                                    fontWeight: "bold",
+                                                    padding: "12px",
+                                                    borderRadius: "10px",
+                                                    border: "none"
+                                                }}>
                                                 Edit
                                             </NavLink>
+                                        </td>
+                                        
+                                        <td style={{backgroundColor: "#f4a6b8",color: "#702d43"}}>
+                                            <button
+                                                className="btn"
+                                                onClick={() => this.deleteDepartamento(dept.numero)}
+                                                style={{
+                                                    backgroundColor: "#e88eaa",
+                                                    color: "#ffffff",
+                                                    fontWeight: "bold",
+                                                    padding: "12px",
+                                                    borderRadius: "10px",
+                                                    border: "none"
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>)
                                 })
