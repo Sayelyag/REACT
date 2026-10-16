@@ -35,6 +35,14 @@ export default class MenuComponents extends Component {
                         aria-controls="navbarSupportedContent"
                         aria-expanded="false"
                         aria-label="Toggle navigation"
+                        style={{
+                            backgroundColor: "#e88eaa",
+                            color: "#ffffff",
+                            fontWeight: "bold",
+                            padding: "12px",
+                            borderRadius: "10px",
+                            border: "none"
+                        }}
                     >
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -59,6 +67,15 @@ export default class MenuComponents extends Component {
                                 </a> */}
                                 <NavLink className="nav-link" to="/CreateDepartamento">
                                     Crear Departamento
+                                </NavLink>
+                            </li>
+
+                            <li className="nav-item">
+                                {/* <a className="nav-link" href="/link">
+                                    Link
+                                </a> */}
+                                <NavLink className="nav-link" to="/HospitalesMultiples">
+                                    Hospitales Multiples
                                 </NavLink>
                             </li>
 
@@ -129,6 +146,14 @@ export default class MenuComponents extends Component {
                             <button
                                 className="btn btn-outline-success"
                                 type="submit"
+                                style={{
+                                    backgroundColor: "#e88eaa",
+                                    color: "#ffffff",
+                                    fontWeight: "bold",
+                                    padding: "12px",
+                                    borderRadius: "10px",
+                                    border: "none"
+                                }}
                             >
                                 Search
                             </button>

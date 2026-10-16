@@ -28,6 +28,7 @@ export default class HomeComponents extends Component {
     componentDidMount = () => {
         this.loadDepartamentos();
     }
+
     render() {
         if (this.state.status === true) {
             return (
