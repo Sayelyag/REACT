@@ -1,0 +1,322 @@
+# Crear el proyecto (si el profesor pide crear uno nuevo)
+npx create-react-app apuestas-futbol
+
+# Entrar en la carpeta
+cd apuestas-futbol
+
+# Instalar Axios para las peticiones a la API
+npm install axios
+
+# Instalar React Router para navegar entre páginas
+npm install react-router-dom
+
+# Arrancar el proyecto
+npm start
+
+
+2. Organizar los archivos
+Esta es la estructura aproximada que hemos utilizado. Los nombres deben coincidir con los imports de tu proyecto.
+src/
+
+components/
+
+ Router.js — define las rutas.
+ MenuComponent.js — menú superior y desplegable.
+ HomeComponent.js — página de inicio.
+ ApuestasComponent.js — listado de apuestas.
+ CreateApuestas.js — formulario de creación.
+ JugadoresComponent.js — buscador general de jugadores.
+ EquipoComponent.js — tarjeta de un equipo.
+ JugadoresEquipoComponent.js — tabla de jugadores de un equipo.
+ DetalleJugadorComponent.js — tarjeta con detalles de un jugador.
+ Ace.jpg — imagen del menú.
+
+services/
+
+ ServiceClubs.js — peticiones HTTP a la API.
+
+
+
+La ruta exacta de ServiceClubs.js depende de dónde tengas la carpeta services. En nuestro código, los componentes la importan con ../services/ServiceClubs.
+
+3. Crear el servicio para conectar con la API
+Archivo: ServiceClubs.js.
+El servicio separa las peticiones HTTP del código visual de los componentes.
+En nuestro ejercicio utilizamos métodos como:
+- obtenerClubs() — obtiene los equipos.
+- obtenerJugadoresNombre(nombre) — busca jugadores por nombre.
+- obtenerJugadoresClub(id) — obtiene jugadores de un equipo.
+Ejemplo de la lógica que seguimos:
+import axios from 'axios'
+
+export default class ServiceClubs {
+
+    url = 'URL_BASE_DE_LA_API'
+
+    obtenerClubs = async () => {
+        let respuesta = await axios.get(this.url + '/rutaEquipos')
+        return respuesta.data
+    }
+}
+
+
+Es solo un ejemplo de estructura, no el código completo de tu servicio: las URLs deben ser las reales de tu API.
+Idea clave para el examen: axios.get() pide datos al servidor, await espera la respuesta y respuesta.data contiene los datos recibidos.
+4. Crear el menú superior
+Archivo: MenuComponent.js.
+Partimos del menú que ya tenías, con Home, Apuestas, Jugadores y Equipos.
+Pasos:
+1. Importar React, Component, NavLink y ServiceClubs.
+2. Crear una instancia de ServiceClubs.
+3. Declarar state con equipos: [].
+4. Usar componentDidMount() para cargar los equipos.
+5. Guardar los datos con setState().
+6. Recorrer los equipos con map().
+7. Crear el desplegable de Bootstrap con los nombres de los equipos.
+La parte importante de la carga es:
+state = {
+    equipos: []
+}
+
+componentDidMount = async () => {
+    let datos = await this.service.obtenerClubs()
+
+    this.setState({
+        equipos: datos
+    })
+}
+
+
+Y para generar las opciones:
+{this.state.equipos.map((equipo) => (
+    <li key={equipo.idEquipo}>
+        <NavLink
+            className="dropdown-item"
+            to={'/equipo/' + equipo.idEquipo}
+        >
+            {equipo.nombre}
+        </NavLink>
+    </li>
+))}
+
+
+Error que solucionamos: la API utiliza idEquipo, no id. Por eso es importante comprobar los nombres reales de las propiedades que devuelve el servidor.
+
+5. Configurar las rutas
+Archivo: Router.js.
+Importamos BrowserRouter, Routes y Route de react-router-dom.
+Las rutas originales se conservaron y añadimos las nuevas páginas.
+Ruta	Componente	Función
+/	HomeComponent	Inicio
+/Apuestas	ApuestasComponent	Listado de apuestas
+/insert/apuesta	CreateApuestas	Crear apuesta
+/Jugadores	JugadoresComponent	Buscador general
+/equipo/:id	EquipoComponent	Tarjeta del equipo
+/equipo/:idEquipo/jugadores	JugadoresEquipoComponent	Tabla de jugadores
+/equipo/:idEquipo/jugadores/:idJugador	DetalleJugadorComponent	Detalles individuales
+El símbolo : indica que esa parte de la URL es una variable.
+Por ejemplo, en /equipo/1, el valor de id es 1.
+Para obtener ese valor utilizamos useParams() en una función auxiliar y se lo pasamos al componente de clase mediante props.
+function EquipoRoute() {
+    const { id } = useParams()
+
+    return <EquipoComponent idEquipo={id} />
+}
+
+
+Esto nos permite mantener los componentes de clase que has trabajado en clase, aunque utilicemos un hook en el componente auxiliar.
+
+6. Crear el buscador general de jugadores
+Archivo: JugadoresComponent.js.
+Este componente permite buscar por nombre o por equipo.
+A. Preparar las referencias y el estado
+inputNombre = React.createRef()
+selectEquipo = React.createRef()
+
+state = {
+    jugadores: [],
+    equipos: [],
+    buscarRealizado: false
+}
+
+
+- createRef() permite leer el valor del input o del desplegable.
+- jugadores almacena los resultados.
+- equipos almacena las opciones del desplegable.
+- buscarRealizado controla cuándo aparece la tabla.
+B. Cargar los equipos
+Utilizamos componentDidMount() para llamar al servicio cuando aparece el componente.
+C. Buscar por nombre
+1. Capturar el evento del formulario.
+2. Ejecutar event.preventDefault().
+3. Leer el nombre con this.inputNombre.current.value.
+4. Llamar a obtenerJugadoresNombre(nombre).
+5. Guardar los resultados con setState().
+D. Buscar por equipo
+1. Leer el identificador del desplegable.
+2. Comprobar que no esté vacío.
+3. Llamar a obtenerJugadoresClub(id).
+4. Guardar los resultados en el estado.
+5. Mostrar la tabla.
+La corrección más importante de este apartado fue utilizar equipo.idEquipo en lugar de equipo.id.
+E. Mostrar la tabla
+Utilizamos una condición para que no aparezca antes de buscar:
+{this.state.buscarRealizado && (
+    <table>
+        {/* Cabecera y filas */}
+    </table>
+)}
+
+
+Y map() para generar una fila por jugador:
+{this.state.jugadores.map((jugador, index) => (
+    <tr key={jugador.idJugador ?? index}>
+        <td>{jugador.nombre}</td>
+        <td>{jugador.posicion}</td>
+        <td>{jugador.pais}</td>
+    </tr>
+))}
+
+
+
+7. Crear la tarjeta de cada equipo
+Archivo: EquipoComponent.js.
+Esta página muestra el equipo seleccionado desde el menú.
+Pasos:
+1. Recibir el identificador del equipo mediante props.
+2. Cargar los equipos con obtenerClubs().
+3. Buscar el equipo correcto con find().
+4. Guardarlo en state.
+5. Mostrar su nombre, imagen, descripción, Champions y web oficial.
+6. Añadir el botón «Volver a Inicio».
+7. Añadir el botón «Ver jugadores».
+La búsqueda del equipo utiliza:
+let equipoEncontrado = datos.find(
+    equipo =>
+        String(equipo.idEquipo) === String(this.props.idEquipo)
+)
+
+
+Convertimos ambos valores a texto para evitar problemas al comparar un número con una cadena.
+El botón «Ver jugadores» debe apuntar a:
+'/equipo/' + equipo.idEquipo + '/jugadores'
+
+
+Así abrimos la página nueva del equipo en vez de reutilizar el buscador general.
+
+8. Crear la tabla de jugadores de un equipo
+Archivo: JugadoresEquipoComponent.js.
+Es una página independiente del buscador general.
+Pasos
+1. Recibir idEquipo mediante props.
+2. Llamar a obtenerJugadoresClub(this.props.idEquipo).
+3. Guardar los resultados en state.
+4. Mostrar un mensaje de carga mientras llega la respuesta.
+5. Crear la tabla con las columnas Nombre, Imagen y Detalles.
+6. Añadir un botón «Ver detalles» para cada jugador.
+7. Añadir un botón «Volver» a la tarjeta del equipo.
+El botón de vuelta utiliza:
+<NavLink to={'/equipo/' + this.props.idEquipo}>
+    <button>Volver</button>
+</NavLink>
+
+
+Y el botón de detalles envía tanto el identificador del equipo como el identificador del jugador en la dirección.
+
+9. Crear la tarjeta individual del jugador
+Archivo: DetalleJugadorComponent.js.
+Esta página muestra la información de un solo jugador.
+La tarjeta debe contener:
+- Nombre.
+- Imagen.
+- Posición.
+- Fecha de nacimiento.
+- País de origen.
+- Botón «Volver».
+El botón debe regresar a la tabla del mismo equipo:
+<NavLink
+    to={'/equipo/' + this.props.idEquipo + '/jugadores'}
+>
+    <button>Volver</button>
+</NavLink>
+
+
+Importante: en el código que hemos preparado, los datos del jugador se pasan mediante state de React Router desde la tabla. Si se actualiza la página de detalles o se entra directamente mediante la URL, esos datos podrían no estar disponibles. Para que sea robusto, lo ideal es obtener el jugador por su identificador desde la API.
+También debemos confirmar el nombre exacto de la propiedad de fecha de nacimiento que devuelve tu API. No basta con inventar un nombre de campo: tiene que coincidir con el dato real.
+
+10. El orden que debes seguir en el examen
+Esta es la chuleta rápida que conviene memorizar.
+1
+
+Preparar el proyecto
+Carpeta, instalaciones, imports y estructura de archivos.
+
+
+
+2
+
+Preparar el servicio
+Axios, URLs, métodos y datos de la API.
+
+
+
+3
+
+Crear el componente
+Importaciones, clase, servicio, referencias y state.
+
+
+
+4
+
+Cargar datos
+componentDidMount → servicio → setState.
+
+
+
+5
+
+Procesar la información
+find() para localizar un elemento; map() para generar listas y tablas.
+
+
+
+6
+
+Mostrar el resultado
+render(), JSX, condiciones, imágenes y estilos.
+
+
+
+7
+
+Conectar la navegación
+Routes, Route, NavLink y parámetros de URL.
+
+
+
+8
+
+Probar y depurar
+Comprobar IDs, propiedades reales de la API, errores de Axios y rutas.
+
+
+
+11. Los conceptos que tienes que dominar
+Concepto	Para qué sirve
+class Component	Crear un componente de clase.
+state	Guardar datos que cambian.
+setState()	Actualizar los datos y volver a renderizar.
+props	Recibir datos desde otro componente.
+createRef()	Leer valores de inputs y selects.
+componentDidMount()	Cargar datos al montar el componente.
+componentDidUpdate()	Reaccionar a cambios en las propiedades.
+async / await	Esperar a que termine una petición.
+axios.get()	Solicitar datos a la API.
+map()	Generar elementos a partir de una lista.
+find()	Buscar un elemento concreto en una lista.
+NavLink	Navegar entre páginas de React.
+useParams()	Leer parámetros de la URL en una función auxiliar.
+event.preventDefault()	Evitar la recarga del formulario.
+condición && (...)	Mostrar una parte de la interfaz solo cuando se cumple una condición.
+Mi consejo para el examen: no memorices todo el código línea por línea. Memoriza el orden y la estructura. Si sabes crear el servicio, cargar los datos, guardarlos en state, recorrerlos con map() y conectar las páginas con Route y NavLink, podrás adaptar este mismo esquema a un ejercicio parecido con clientes, productos, películas, equipos o cualquier otra API.
