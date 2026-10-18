@@ -1,0 +1,30 @@
+npx create-react-app examen
+cd examen
+npm start
+
+npm install --save axios 
+npm install --save react-router-dom 
+npm install --save jquery popper.js 
+npm install bootstrap
+
+examenreact/public/src/
+    index.js
+    App.js
+    index.css
+    components/
+        Aquí crearás los componentes concretos que necesite el enunciado.
+
+Archivo	Qué hace
+global.js                           Guarda la URL base: https://apiejemplos.azurewebsites.net/.
+Routes.js	                        Conecta cada dirección de la web con su componente.
+MenuComponent.js                    Permite ir a Inicio, Equipos y Apuestas.
+HomeComponent.js                    Muestra la página principal.
+EquiposComponent.js                 Consulta y muestra todos los equipos.
+DetallesEquipoComponent.js          Muestra un equipo seleccionado.
+JugadoresComponent.js               Muestra los jugadores de ese equipo en una tabla.
+DetallesJugadorComponent.js         Muestra los datos de un jugador seleccionado.
+ApuestasComponent.js                Consulta todas las apuestas y permite eliminarlas.
+CreateApuestas.js                   Recoge los datos del formulario y crea una apuesta.
+
+
+para que se vea bonito recuerda importar todo en el index
